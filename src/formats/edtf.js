@@ -8,6 +8,12 @@ export const date = [
     "-%Y",         // L1
     "-%Y-%M",      // L1
     "-%Y-%M-%D",   // L1
+    "%CXX",        // L1: decade unspecified
+    "%C%XX",       // L1: year of decade unspecified
+    "%Y-XX",       // L1: month unspecified
+    "%Y-XX-XX",    // L1: day and month unspecified
+    "%Y-%M-XX",    // L1: day unspecified
+    // negative years?
 ];
 
 export const year = [
@@ -33,7 +39,9 @@ export const year = [
     "Y-%YS1",      // L2
     "Y%CE2S1",     // L2
     "Y-%CE2S1",    // L2
+    // more digits for year number (5+)
 ];
+
 export const season = [
     // independent of location
     "%Y-21",       // L1: spring
@@ -94,10 +102,6 @@ const full_date = [
   "%Y-%M-%D",
 ];
 
-// Time Interval
-//   L0: only support for date intervals required, no times
-//   L1: start or end date may be omitted if unknown
-//   L1: `..` for start or end date if unspecified
 // Qualification of a date (complete)
 //   L1:
 //     `?` "uncertain"
@@ -108,13 +112,7 @@ const full_date = [
 //   L2: prefix only for the component following
 //   L2: also in intervals
 // Unspecified digit(s) from the right
-//   L1:
-//     "%Y-XX" month
-//     "%Y-XX-XX" day and month
-//     "%Y-%M-XX" day
-//     "%CXX" decade
-//     "%C%XX" year of decade
-//   L2: X for any digit in any component
+//   L2: `X` for any digit in any component
 // Set representation
 //   L2:
 //     [2021,2022] single-choice list
@@ -177,6 +175,10 @@ export const range = [
   ...crossJoin(full_date, example_periods).map(([d, p]) => `${d}/${p}`),
   ...crossJoin(full_date, full_date).map(([d1, d2]) => `${d1}/${d2}`),
   ...crossJoin(example_periods, full_date).map(([p, d]) => `${p}/${d}`),
+  ...full_date.map(([d]) => `${d}/`),   // L1: end date unknown
+  ...full_date.map(([d]) => `/${d}`),   // L1: start date unknown
+  ...full_date.map(([d]) => `${d}/..`), // L1: end date unspecified
+  ...full_date.map(([d]) => `../${d}`), // L1: start date unspecified
 
   ...crossJoin(example_dateTimes, ["P1DT1H"]).map(([d, p]) => `${d}/${p}`),
   ...crossJoin(example_dateTimes, ["P1DT1H"]).map(([d, p]) => `${p}/${d}`),
