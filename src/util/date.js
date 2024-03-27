@@ -24,6 +24,63 @@ export function getMonthLength (d) {
     if (m === 1) return isLeapYear(d.getUTCFullYear()) ? 29 : 28;
     return [31,0,31,30,31,30,31,31,30,31,30,31][m];
 }
+/**
+ * @param {Date} d
+ */
+export function getSeasonLength (d) {
+    const s = getYearDay(d) - (isLeapYear(d.getUTCFullYear()) ? 81 : 80); /* TODO */
+/* ISO 8601-2 / EDTF
+21≈25=31     Spring - Northern Hemisphere = Autumn - Southern Hemisphere ~ 93 days
+22≈26=32     Summer - Northern Hemisphere = Winter - Southern Hemisphere ~ 94 days
+23≈27=29     Autumn - Northern Hemisphere = Spring - Southern Hemisphere ~ 90 days
+24≈28=30     Winter - Northern Hemisphere = Summer - Southern Hemisphere ~ 89 days
+*/
+    if (s > 0) {
+      if (s <= 93)
+        return 93;
+      else if (s <= 187)
+        return 94;
+      else if (s <= 277)
+        return 90;
+    }
+    return 89;
+}
+/**
+ * @param {Date} d
+ */
+export function getTrimesterLength (d) {
+    const s = Math.floor(d.getUTCMonth() / 3);
+/* ISO 8601-2 / EDTF
+33     Quarter 1 (3 months in duration)
+34     Quarter 2 (3 months in duration)
+35     Quarter 3 (3 months in duration)
+36     Quarter 4 (3 months in duration)
+*/
+    return [31+(isLeapYear(d.getUTCFullYear()) ? 29 : 28)+31, 30+31+30, 31+31+30, 31+30+31][s];
+}
+/**
+ * @param {Date} d
+ */
+export function getQuadrimesterLength (d) {
+    const s = Math.floor(d.getUTCMonth() / 4);
+/* ISO 8601-2 / EDTF
+37     Quadrimester 1 (4 months in duration)
+38     Quadrimester 2 (4 months in duration)
+39     Quadrimester 3 (4 months in duration)
+*/
+    return [31+(isLeapYear(d.getUTCFullYear()) ? 29 : 28)+31+30, 31+30+31+31, 30+31+30+31][s];
+}
+/**
+ * @param {Date} d
+ */
+export function getSemesterLength (d) {
+    const s = Math.floor(d.getUTCMonth() / 6);
+/* ISO 8601-2 / EDTF
+40     Semestral 1 (6 months in duration)
+41     Semestral 2 (6 months in duration)
+*/
+    return [31+(isLeapYear(d.getUTCFullYear()) ? 29 : 28)+31+30+31+30, 31+31+30+31+30+31][s];
+}
 
 /**
  * @param {Date} d
@@ -79,7 +136,6 @@ export function getWeek (dt) {
         return int(n / 7) + 1;
     }
 }
-
 
 /**
  * Returns the ISO Week Year for the given date. The returned year may be
