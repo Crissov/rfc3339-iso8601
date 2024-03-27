@@ -22,10 +22,12 @@ export const year = [
     // letter-prefixed calendar year, without month etc.
     "Y%Y",         // L1
     "Y-%Y",        // L1
-    "Y%CE2",       // L1
+    "Y%LE3",       // L1 millenium
+    "Y-%LE3",      // L1
+    "Y%CE2",       // L1 century
     "Y-%CE2",      // L1
-    "Y%C%XE1",     // L1
-    "Y-%C%XE1",    // L1
+    "Y%XE1",       // L1 decade
+    "Y-%XE1",      // L1
     "Y\d+E\d",     // L1
     "Y-\d+E\d",    // L1
     // significant digits
@@ -37,12 +39,14 @@ export const year = [
     "-%YS3",       // L2
     "Y%YS1",       // L2
     "Y-%YS1",      // L2
+    // ...
     "Y%CE2S1",     // L2
     "Y-%CE2S1",    // L2
     // more digits for year number (5+)
 ];
 
 export const season = [
+    //"%Y-%S",     // new placeholder
     // independent of location
     "%Y-21",       // L1: spring
     "%Y-22",       // L1: summer
