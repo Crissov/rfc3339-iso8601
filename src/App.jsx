@@ -14,6 +14,7 @@ function App ({
   initialDate = /** @type {Date?} */ (null),
   initialShowISO = true,
   initialShowRFC = true,
+  initialShowEDTF = false,
   initialShowHTML = false,
   initialShowColours = false,
   readOnlyMode = false,
@@ -23,6 +24,7 @@ function App ({
   const [ now, setNow ] = useState(() => (initialDate || new Date()));
   const [ showISO, setShowISO ] = useSavedState("rfciso.showISO", initialShowISO);
   const [ showRFC, setShowRFC ] = useSavedState("rfciso.showRFC", initialShowRFC);
+  const [ showEDTF, setShowEDTF ] = useSavedState("rfciso.showEDTF", initialShowEDTF);
   const [ showHTML, setShowHTML ] = useSavedState("rfciso.showHTML", initialShowHTML);
   const [ showColours, setShowColours ] = useSavedState("rfciso.showColours", initialShowColours);
   const [ isPaused, setIsPaused ] = useState(initialDate !== null);
@@ -40,8 +42,8 @@ function App ({
   }, [isPaused]);
 
   useEffect(() => {
-    document.title = getTitle(showRFC, showISO, showHTML);
-  }, [showISO, showRFC, showHTML]);
+    document.title = getTitle(showRFC, showISO, showEDTF, showHTML);
+  }, [showISO, showRFC, showEDTF, showHTML]);
 
   useEffect(() => {
     const cb = e => {
@@ -61,7 +63,7 @@ function App ({
         { !readOnlyMode && <h1>{getTitle(showRFC, showISO, showHTML)}</h1> }
         { showDiagram &&
           <>
-            <Diagram date={now} iso={showISO} rfc={showRFC} html={showHTML} showKey={showColours} initialMutual={mutualType.current} />
+            <Diagram date={now} iso={showISO} rfc={showRFC} edtf={showEDTF} html={showHTML} showKey={showColours} initialMutual={mutualType.current} />
             {
               !readOnlyMode &&
               <p className='App-DiagramControls'>
@@ -72,6 +74,10 @@ function App ({
                 <label>
                   <input type="checkbox" checked={showRFC} onChange={e => setShowRFC(e.target.checked)} />
                   Show RFC 3339
+                </label>
+                <label>
+                  <input type="checkbox" checked={showEDTF} onChange={e => setShowEDTF(e.target.checked)} />
+                  Show EDTF
                 </label>
                 <label>
                   <input type="checkbox" checked={showHTML} onChange={e => setShowHTML(e.target.checked)} />
@@ -116,11 +122,11 @@ function App ({
 %X - Decade
 %Y - Year
 %M - Month
-%D - Day
+%D - Day (DOM)
 %V - Week Year
 %W - Week
-%w - Week Day
-%O - Ordinal Day
+%w - Week Day (DOW)
+%O - Ordinal Day (DOY)
 
 %h - Hour
 %m - Minute
@@ -158,6 +164,8 @@ function getTitle(showRFC, showISO, showHTML) {
     t.push("RFC 3339");
   if (showISO)
     t.push("ISO 8601");
+  if (showEDTF)
+    t.push("EDTF");
   if (showHTML)
     t.push("HTML");
   return t.join(" vs ");
